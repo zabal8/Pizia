@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Django
+db.sqlite3
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Bases de datos locales
+*.db
+
+# Variables de entorno
+.env
+
+# VS Code
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
