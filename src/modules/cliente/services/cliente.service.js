@@ -30,13 +30,20 @@ class ClienteService {
     `).get(id);
 
     if (!row) {
-      throw new Error(`Cliente con ID ${id} no encontrado`);
+      const error = new Error(
+        `Cliente con ID ${id} no encontrado`
+      );
+
+      error.code = 'NOT_FOUND';
+
+      throw error;
     }
 
     return row;
   }
 
   save(data) {
+
     const existe = db.prepare(`
       SELECT id
       FROM clientes
@@ -44,7 +51,13 @@ class ClienteService {
     `).get(data.email);
 
     if (existe) {
-      throw new Error('Ya existe un cliente con ese email');
+      const error = new Error(
+        'Ya existe un cliente con ese email'
+      );
+
+      error.code = 'DUPLICATE_EMAIL';
+
+      throw error;
     }
 
     const cliente = new Cliente(data);
@@ -70,7 +83,30 @@ class ClienteService {
   }
 
   update(id, data) {
+
     const clienteActual = this.findById(id);
+
+    // Verificar si el email ya pertenece
+    // a otro cliente
+    const emailExistente = db.prepare(`
+      SELECT id
+      FROM clientes
+      WHERE email = ?
+      AND id != ?
+    `).get(
+      data.email,
+      id
+    );
+
+    if (emailExistente) {
+      const error = new Error(
+        'Ya existe otro cliente con ese email'
+      );
+
+      error.code = 'DUPLICATE_EMAIL';
+
+      throw error;
+    }
 
     const clienteActualizado = {
       ...clienteActual,
@@ -98,13 +134,20 @@ class ClienteService {
   }
 
   delete(id) {
+
     const resultado = db.prepare(`
       DELETE FROM clientes
       WHERE id = ?
     `).run(id);
 
     if (resultado.changes === 0) {
-      throw new Error(`Cliente con ID ${id} no encontrado`);
+      const error = new Error(
+        `Cliente con ID ${id} no encontrado`
+      );
+
+      error.code = 'NOT_FOUND';
+
+      throw error;
     }
   }
 }
