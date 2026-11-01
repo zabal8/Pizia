@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pizia
+      POSTGRES_USER: pizia
+      POSTGRES_PASSWORD: pizia_local_only
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pizia -d pizia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  web:
+    build: .
+    restart: unless-stopped
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-local-only-change-me}
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DATABASE_URL: postgres://pizia:pizia_local_only@db:5432/pizia
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres_data:
