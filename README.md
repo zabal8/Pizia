@@ -7,7 +7,7 @@ Aplicación web del proyecto formativo ADSO. La aplicación usa Django para el b
 1. Instala Python 3.12 o superior y crea un entorno virtual.
 2. `python -m venv .venv` y activa el entorno.
 3. `pip install -r requirements.txt`
-4. `Copy-Item .env.example .env` (PowerShell) y configura una clave secreta propia.
+4. `Copy-Item .env.example .env` (PowerShell). El proyecto carga `.env` automáticamente: configura `DJANGO_SECRET_KEY` y, para PostgreSQL local, `DATABASE_URL` con la cadena de conexión; si se deja vacía, usa SQLite.
 5. `python manage.py migrate`
 6. `python manage.py seed_demo` para cargar menú de demostración.
 7. `python manage.py createsuperuser` para crear la cuenta del equipo operador.
