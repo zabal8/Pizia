@@ -8,7 +8,9 @@ El plan gratuito de PostgreSQL de Render es temporal (la documentación del prov
 
 ## GitHub colaborativo
 
-El directorio tiene un solo repositorio Django; `pedidos_app/` y `pizia/` son backend y `templates/` es la interfaz. Crea un repositorio bajo la cuenta del aprendiz, añade a cada integrante como colaborador, trabaja por ramas y registra aportes reales mediante commits revisables. No inventes commits o integrantes. En este entorno no hay conexión autenticada a GitHub ni remoto configurado, así que la publicación y colaboración deben hacerse desde la cuenta del aprendiz.
+El directorio tiene un solo repositorio Django; `pedidos_app/` y `pizia/` son backend y `templates/` es la interfaz. Crea un repositorio bajo la cuenta del aprendiz, añade a cada integrante como colaborador, trabaja por ramas y registra aportes reales mediante commits revisables. No inventes commits o integrantes. La rama `codex/pizia-checklist` se publica desde VS Code con GitHub.
+
+El Blueprint solicita `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL` y `DJANGO_SUPERUSER_PASSWORD` para crear el primer operador al iniciar el contenedor. El comando es idempotente: si el usuario existe, no lo modifica. Usa una contraseña única y elimínala de las variables de entorno tras verificar el primer despliegue. En desarrollo local también se puede ejecutar `python manage.py createsuperuser`.
 
 ## Drive y video
 

@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.core.management import call_command
+from django.contrib.auth import get_user_model
 from io import StringIO
+from unittest.mock import patch
 
 from .models import Cliente, Ingrediente, Pizza, Pedido
 
@@ -58,3 +60,22 @@ class FlujoClienteTests(TestCase):
         call_command('seed_demo', stdout=StringIO())
         call_command('seed_demo', stdout=StringIO())
         self.assertEqual(Pizza.objects.count(), 3)
+
+
+class BootstrapAdminTests(TestCase):
+    @patch.dict('os.environ', {
+        'DJANGO_SUPERUSER_USERNAME': 'operador-inicial',
+        'DJANGO_SUPERUSER_EMAIL': 'operador@example.com',
+        'DJANGO_SUPERUSER_PASSWORD': 'local-test-password-93x',
+    })
+    def test_crea_el_administrador_inicial_sin_reemplazarlo(self):
+        call_command('bootstrap_admin', stdout=StringIO())
+        usuario = get_user_model().objects.get(username='operador-inicial')
+        self.assertTrue(usuario.is_superuser)
+        self.assertTrue(usuario.check_password('local-test-password-93x'))
+
+        with patch.dict('os.environ', {'DJANGO_SUPERUSER_PASSWORD': 'otra-clave'}):
+            call_command('bootstrap_admin', stdout=StringIO())
+
+        usuario.refresh_from_db()
+        self.assertTrue(usuario.check_password('local-test-password-93x'))

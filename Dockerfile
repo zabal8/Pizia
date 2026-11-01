@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN python manage.py collectstatic --noinput
 EXPOSE 8000
-CMD ["sh", "-c", "python manage.py migrate && gunicorn pizia.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py seed_demo && python manage.py bootstrap_admin && gunicorn pizia.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2"]
